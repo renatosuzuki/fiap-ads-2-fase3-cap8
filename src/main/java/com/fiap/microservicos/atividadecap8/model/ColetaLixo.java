@@ -3,6 +3,8 @@ package com.fiap.microservicos.atividadecap8.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Entity(name="agendamento_coleta")
@@ -17,17 +19,16 @@ public class ColetaLixo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "endereco", nullable = false)
+    @Column(nullable = false)
     private String endereco;
 
     @Column(name = "data_coleta", nullable = false)
-    private LocalDateTime dataColeta;
+    private Date dataColeta;
 
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(name = "horario_coleta")
-//    private Time horarioColeta;
+    @Column(name = "horario_coleta", nullable = false)
+    private String horarioColeta;
 
-    @Column(name = "tipo_residuo", nullable = false)
+    @Column(name = "tipo_residuo")
     private String tipoResiduo;
 
     @Column(name = "observacoes")

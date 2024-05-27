@@ -13,9 +13,8 @@ import java.time.ZoneOffset;
 @Service
 public class TokenService {
     Algorithm algo = Algorithm.HMAC256("fiap-secreto");
-    public String gerarToken(User usuario){
-        //Algorithm algo = Algorithm.HMAC256("fiap-secreto");
 
+    public String gerarToken(User usuario) {
         String token = JWT
                 .create()
                 .withIssuer("fiap")
@@ -26,21 +25,20 @@ public class TokenService {
         return token;
     }
 
-    public String validarToken(String token){
-        try{
+    public String validarToken(String token) {
+        try {
             return JWT
                     .require(algo)
                     .withIssuer("fiap")
                     .build()
                     .verify(token)
                     .getSubject();
-        }catch (JWTVerificationException exception){
+        } catch (JWTVerificationException exception) {
             return "";
         }
-
     }
 
-    private Instant gerarDataExpiracao(){
+    private Instant gerarDataExpiracao() {
         return LocalDateTime
                 .now()
                 .plusHours(2)
