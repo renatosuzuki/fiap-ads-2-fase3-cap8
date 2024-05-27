@@ -2,8 +2,10 @@ package com.fiap.microservicos.atividadecap8.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import java.time.LocalDateTime;
 import java.util.Date;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Entity(name="agendamento_coleta")
 @Table(name="agendamento_coleta")
