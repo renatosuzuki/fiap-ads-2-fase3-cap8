@@ -1,12 +1,17 @@
 package com.fiap.microservicos.atividadecap8.controller;
 
 import com.fiap.microservicos.atividadecap8.model.ColetaLixo;
+import com.fiap.microservicos.atividadecap8.repository.ColetaLixoRepository;
 import com.fiap.microservicos.atividadecap8.service.ColetaLixoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +21,21 @@ public class ColetaLixoController {
 
     @Autowired
     private ColetaLixoService service;
+
+    @Autowired
+    private ColetaLixoRepository coletaLixoRepository;
+
+    @RequestMapping(value = "criar-coleta", method = RequestMethod.POST)
+    public ResponseEntity<ColetaLixo> criarColeta(@Validated @RequestBody ColetaLixo coleta) {
+        if (coleta.getEndereco() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Retorna um erro 400 se endereco estiver ausente
+        }
+        if (coleta.getDataColeta() == null) {
+            coleta.setDataColeta(LocalDateTime.now());  // Define a data atual se não fornecida
+        }
+        ColetaLixo savedColeta = coletaLixoRepository.save(coleta);
+        return new ResponseEntity<>(savedColeta, HttpStatus.CREATED);
+    }
 
     @GetMapping("/coleta-lixo")
     public List<ColetaLixo> getAllColetaLixo() {
@@ -60,7 +80,7 @@ public class ColetaLixoController {
 
                toUpdateColeta.setEndereco(coletaLixo.getEndereco());
                toUpdateColeta.setDataColeta(coletaLixo.getDataColeta());
-               toUpdateColeta.setHorarioColeta(coletaLixo.getHorarioColeta());
+               //toUpdateColeta.setHorarioColeta(coletaLixo.getHorarioColeta());
                toUpdateColeta.setTipoResiduo(coletaLixo.getTipoResiduo());
                toUpdateColeta.setObservacoes(coletaLixo.getObservacoes());
 
@@ -75,7 +95,8 @@ public class ColetaLixoController {
        }
     }
 
-    @DeleteMapping("/agendar-coleta-lixo/{id}")
+    @DeleteMapping("/excluir-coleta-lixo/{id}")
+    @PreAuthorize("ADMIN")
     public ResponseEntity<Object> deleteColetaLixo(@PathVariable Long id) {
         try {
             Optional<ColetaLixo> coleta = service.findById(id);
